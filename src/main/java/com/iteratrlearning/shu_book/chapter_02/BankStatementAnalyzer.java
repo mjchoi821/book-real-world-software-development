@@ -5,29 +5,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 예제 2-8 BankStatementProcessor 클래스를 이용해 입출금 내역 목록 처리
- * - argument : bank-data-simple.csv
+ * 예제 2-12 BankStatementAnalyzer 에서 특정 파서와의 결합(의존성) 제거
  */
 public class BankStatementAnalyzer {
     private static final String RESOURCES = "src/main/resources/";
-    private static final BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
 
-    public static void main(String[] args) throws IOException {
-        final String fileName = args[0];
+    public void analyze(final String fileName,
+                        final BankStatementParser bankStatementParser) throws IOException {
         final Path path = Paths.get(RESOURCES + fileName);
         final List<String> lines = Files.readAllLines(path);
 
-        final List<BankTransaction> bankTransactions = bankStatementCSVParser.parseLinesFromCSV(lines);
+        final List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
         final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         collectSummary(bankStatementProcessor);
     }
 
-    private static void collectSummary(final BankStatementProcessor bankStatementProcessor) {
+    private void collectSummary(final BankStatementProcessor bankStatementProcessor) {
         System.out.println("The total for all transactions is " + bankStatementProcessor.calculateTotalAmount());
         System.out.println("The total for transactions in January is " + bankStatementProcessor.calculateTotalInMonth(Month.JANUARY));
         System.out.println("The total for transactions in February is " + bankStatementProcessor.calculateTotalInMonth(Month.FEBRUARY));
