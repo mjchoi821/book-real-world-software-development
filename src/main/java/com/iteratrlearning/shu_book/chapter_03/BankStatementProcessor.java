@@ -10,6 +10,7 @@ import java.util.List;
  * 예제 3-2 특정 월의 입출금 내역 찾기
  * 예제 3-3 특정 월이나 금액으로 입출금 내역 검색하기
  * 예제 3-5 개방/폐쇄 원칙을 적용한 후 유연해진 findTransactions() 메서드
+ * 예제 3-11 BankTransactionProcessor 클래스의 핵심 연산 함수형 인터페이스 적용
  */
 public class BankStatementProcessor {
     private final List<BankTransaction> bankTransactions;
@@ -18,32 +19,26 @@ public class BankStatementProcessor {
         this.bankTransactions = bankTransactions;
     }
 
-    public double calculateTotalAmount() {
-        double total = 0;
-        for(final BankTransaction bankTransaction: bankTransactions) {
-            total += bankTransaction.getAmount();
+    private double summarizeTransactions(final BankTransactionSummarizer bankTransactionSummarizer) {
+        double result = 0;
+        for (final BankTransaction bankTransaction: bankTransactions) {
+            result = bankTransactionSummarizer.summarize(result, bankTransaction);
         }
-        return total;
+        return result;
+    }
+
+    public double calculateTotalAmount() {
+        return summarizeTransactions((acc, bankTransaction) -> acc + bankTransaction.getAmount());
     }
 
     public double calculateTotalInMonth(final Month month) {
-        double total = 0;
-        for(final BankTransaction bankTransaction: bankTransactions) {
-            if(bankTransaction.getDate().getMonth() == month) {
-                total += bankTransaction.getAmount();
-            }
-        }
-        return total;
+        return summarizeTransactions((acc, bankTransaction) ->
+                bankTransaction.getDate().getMonth() == month ? acc + bankTransaction.getAmount() : acc);
     }
 
     public double calculateTotalForCategory(final String category) {
-        double total = 0;
-        for(final BankTransaction bankTransaction: bankTransactions) {
-            if(bankTransaction.getDescription().equals(category)) {
-                total += bankTransaction.getAmount();
-            }
-        }
-        return total;
+        return summarizeTransactions((acc, bankTransaction) ->
+                bankTransaction.getDescription().equals(category) ? acc + bankTransaction.getAmount() : acc);
     }
 
     public List<BankTransaction> findTransactions(final BankTransactionFilter bankTransactionFilter) {
@@ -54,5 +49,9 @@ public class BankStatementProcessor {
             }
         }
         return result;
+    }
+
+    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
+        return findTransactions(bankTransaction -> bankTransaction.getAmount() >= amount);
     }
 }

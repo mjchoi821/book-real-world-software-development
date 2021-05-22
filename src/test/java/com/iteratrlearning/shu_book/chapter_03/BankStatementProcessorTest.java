@@ -28,8 +28,7 @@ public class BankStatementProcessorTest {
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         // when
-        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransaction ->
-                bankTransaction.getAmount() == searchAmount);
+        List<BankTransaction> result = bankStatementProcessor.findTransactionsGreaterThanEqual(searchAmount);
 
         // then
         assertEquals(result.size(), 1);
