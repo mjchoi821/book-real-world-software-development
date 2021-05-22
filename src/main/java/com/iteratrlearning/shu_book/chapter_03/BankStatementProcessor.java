@@ -8,6 +8,7 @@ import java.util.List;
  * 예제 2-7 BankStatementProcessor 클래스의 계산 연산 그룹화
  * 예제 3-1 특정 금액 이상의 은행 거래 내역 찾기
  * 예제 3-2 특정 월의 입출금 내역 찾기
+ * 예제 3-3 특정 월이나 금액으로 입출금 내역 검색하기
  */
 public class BankStatementProcessor {
     private final List<BankTransaction> bankTransactions;
@@ -58,6 +59,17 @@ public class BankStatementProcessor {
         final List<BankTransaction> result = new ArrayList<>();
         for (final BankTransaction bankTransaction: bankTransactions) {
             if (bankTransaction.getDate().getMonth() == month) {
+                result.add(bankTransaction);
+            }
+        }
+        return result;
+    }
+
+    public List<BankTransaction> findTransactionsInMonthAndGreater(final Month month, final int amount) {
+        final List<BankTransaction> result = new ArrayList<>();
+        for (final BankTransaction bankTransaction: bankTransactions) {
+            if (bankTransaction.getDate().getMonth() == month
+                    && bankTransaction.getAmount() >= amount) {
                 result.add(bankTransaction);
             }
         }
