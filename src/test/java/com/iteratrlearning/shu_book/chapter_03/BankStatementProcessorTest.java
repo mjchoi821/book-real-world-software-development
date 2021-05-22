@@ -66,7 +66,6 @@ public class BankStatementProcessorTest {
     @Test
     public void searchCondition_Specific_Month_And_Amount_GreaterThanEqual() {
         // given
-        BankTransactionFilter bankTransactionFilter = new BankTransactionIsFebruaryAndExpensive();
         List<BankTransaction> expected = List.of(
                 new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 1), 6000, "Salary"),
                 new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 2), 2000, "Royalties"),
@@ -83,7 +82,9 @@ public class BankStatementProcessorTest {
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         // when
-        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransactionFilter);
+        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransaction ->
+                bankTransaction.getDate().getMonth() == Month.FEBRUARY
+                        && bankTransaction.getAmount() >= 1_000);
 
         // then
         assertArrayEquals(expected.toArray(), result.toArray());
