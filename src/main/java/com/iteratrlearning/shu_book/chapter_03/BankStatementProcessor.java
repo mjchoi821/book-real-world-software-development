@@ -9,6 +9,7 @@ import java.util.List;
  * 예제 3-1 특정 금액 이상의 은행 거래 내역 찾기
  * 예제 3-2 특정 월의 입출금 내역 찾기
  * 예제 3-3 특정 월이나 금액으로 입출금 내역 검색하기
+ * 예제 3-5 개방/폐쇄 원칙을 적용한 후 유연해진 findTransactions() 메서드
  */
 public class BankStatementProcessor {
     private final List<BankTransaction> bankTransactions;
@@ -45,31 +46,10 @@ public class BankStatementProcessor {
         return total;
     }
 
-    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
+    public List<BankTransaction> findTransactions(final BankTransactionFilter bankTransactionFilter) {
         final List<BankTransaction> result = new ArrayList<>();
         for (final BankTransaction bankTransaction: bankTransactions) {
-            if (bankTransaction.getAmount() >= amount) {
-                result.add(bankTransaction);
-            }
-        }
-        return result;
-    }
-
-    public List<BankTransaction> findTransactionInMonth(final Month month) {
-        final List<BankTransaction> result = new ArrayList<>();
-        for (final BankTransaction bankTransaction: bankTransactions) {
-            if (bankTransaction.getDate().getMonth() == month) {
-                result.add(bankTransaction);
-            }
-        }
-        return result;
-    }
-
-    public List<BankTransaction> findTransactionsInMonthAndGreater(final Month month, final int amount) {
-        final List<BankTransaction> result = new ArrayList<>();
-        for (final BankTransaction bankTransaction: bankTransactions) {
-            if (bankTransaction.getDate().getMonth() == month
-                    && bankTransaction.getAmount() >= amount) {
+            if (bankTransactionFilter.test(bankTransaction)) {
                 result.add(bankTransaction);
             }
         }
