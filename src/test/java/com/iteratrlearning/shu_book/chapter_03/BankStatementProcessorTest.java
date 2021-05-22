@@ -28,7 +28,8 @@ public class BankStatementProcessorTest {
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         // when
-        List<BankTransaction> result = bankStatementProcessor.findTransactionsGreaterThanEqual(searchAmount);
+        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransaction ->
+                bankTransaction.getAmount() == searchAmount);
 
         // then
         assertEquals(result.size(), 1);
@@ -54,7 +55,8 @@ public class BankStatementProcessorTest {
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         // when
-        List<BankTransaction> result = bankStatementProcessor.findTransactionInMonth(searchMonth);
+        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransaction ->
+                bankTransaction.getDate().getMonth() == searchMonth);
 
         // then
         assertEquals(result.size(), 2);
@@ -64,9 +66,11 @@ public class BankStatementProcessorTest {
     @Test
     public void searchCondition_Specific_Month_And_Amount_GreaterThanEqual() {
         // given
-        final int searchAmount = 6000;
-        final Month searchMonth = Month.FEBRUARY;
-        List<BankTransaction> expected = List.of(new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 1), 6000, "Salary"));
+        BankTransactionFilter bankTransactionFilter = new BankTransactionIsFebruaryAndExpensive();
+        List<BankTransaction> expected = List.of(
+                new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 1), 6000, "Salary"),
+                new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 2), 2000, "Royalties"),
+                new BankTransaction(LocalDate.of(2017, Month.FEBRUARY, 3), 3000, "Tesco"));
         List<String> lines = List.of("30-01-2017,-100,Deliveroo",
                 "30-01-2017,-50,Tesco",
                 "01-02-2017,6000,Salary",
@@ -79,7 +83,7 @@ public class BankStatementProcessorTest {
         BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
         // when
-        List<BankTransaction> result = bankStatementProcessor.findTransactionsInMonthAndGreater(searchMonth, searchAmount);
+        List<BankTransaction> result = bankStatementProcessor.findTransactions(bankTransactionFilter);
 
         // then
         assertArrayEquals(expected.toArray(), result.toArray());
