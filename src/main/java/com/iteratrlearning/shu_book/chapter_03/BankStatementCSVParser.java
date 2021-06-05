@@ -21,6 +21,11 @@ public class BankStatementCSVParser implements BankStatementParser {
             throw new CSVSyntaxException();
         }
 
+        Notification validation = new BankStatementValidator(columns[2], columns[0], columns[1]).validate();
+        if (validation.hasErrors()) {
+            throw new CSVSyntaxException(validation.errorMessage());
+        }
+
         final LocalDate date = LocalDate.parse(columns[0], DATE_PATTERN);
         final double amount = Double.parseDouble(columns[1]);
         final String description = columns[2];
