@@ -23,8 +23,8 @@ public class ImageImporter implements Importer {
 
         final BufferedImage image = ImageIO.read(file);
         attributes.put(WIDTH, String.valueOf(image.getWidth()));
-        attributes.put(HEIGHT, String.valueOf(image.getWidth()));
-        attributes.put(TYPE, String.valueOf(image.getWidth()));
+        attributes.put(HEIGHT, String.valueOf(image.getHeight()));
+        attributes.put(TYPE, "IMAGE");
 
         return new Document(attributes);
     }
