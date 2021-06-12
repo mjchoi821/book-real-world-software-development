@@ -16,9 +16,10 @@ public class DocumentManagementSystem {
     private final List<Document> documents = new ArrayList<>();
 
     public DocumentManagementSystem() {
-        //extensionToImporter.put("letter", new LetterImporter());
-        //extensionToImporter.put("report", new ReportImporter());
+        extensionToImporter.put("letter", new LetterImporter());
+        extensionToImporter.put("report", new ReportImporter());
         extensionToImporter.put("jpg", new ImageImporter());
+        extensionToImporter.put("invoice", new InvoiceImporter());
     }
 
     public void importFile(String path) throws IOException {
