@@ -46,4 +46,8 @@ public class DocumentManagementSystem {
             throw new UnknownFileTypeException("No extension found For file: " + path);
         }
     }
+
+    public List<Document> contents() {
+        return documents;
+    }
 }
