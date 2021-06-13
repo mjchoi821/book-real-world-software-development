@@ -63,7 +63,7 @@ class DocumentManagementSystemTest {
     void importFile_whenDerivedException() {
         // given
         DocumentManagementSystem dms = new DocumentManagementSystem();
-        String testImportPath = getClass().getClassLoader().getResource("patient.letter").getFile();
+        String testImportPath = getClass().getClassLoader().getResource("unknown.txt").getFile();
         String expectedMessage = "For file: " + testImportPath;
 
         // when
