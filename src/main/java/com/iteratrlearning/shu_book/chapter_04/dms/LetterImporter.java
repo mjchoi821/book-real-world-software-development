@@ -25,6 +25,7 @@ public class LetterImporter implements Importer {
 
         Map<String, String> attributes = textFile.getAttributes();
         attributes.put(TYPE, "LETTER");
+        attributes.put(PATH, file.getPath());
         return new Document(attributes);
     }
 }
